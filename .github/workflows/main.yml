@@ -28,6 +28,9 @@ jobs:
        # setup JFrog CLI
       - name: Step 1-  Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v1
+ 
+      - name: Frogbot by JFrog
+        uses: jfrog/frogbot@v1.0.0
 
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -75,12 +78,12 @@ jobs:
           #Publish build-info
           jfrog rt bp 
           # Scan build with JFrog Xray
-          jfrog rt bs --fail=false > out.txt
+          # jfrog rt bs --fail=false > out.txt
 
           # Show the output
-          cat out.txt
+          # cat out.txt
           # Update the PR comment
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}  gh pr comment ${{ github.event.pull_request.head.ref }} --body-file out.txt
+          # GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}  gh pr comment ${{ github.event.pull_request.head.ref }} --body-file out.txt
 
 
 
