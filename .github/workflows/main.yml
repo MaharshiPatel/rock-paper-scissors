@@ -21,9 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
-      JF_URL: ${{ secrets.JF_URL }} 
-      JF_XRAY_URL: ${{ secrets.JF_XRAY_URL }} 
-      JF_ARTIFACTORY_URL: ${{ secrets.JF_ARTIFACTORY_URL }} 
       JFROG_BUILD_STATUS: PASS
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -81,12 +78,12 @@ jobs:
           #Publish build-info
           jfrog rt bp 
           # Scan build with JFrog Xray
-          # jfrog rt bs --fail=false > out.txt
+          jfrog rt bs --fail=false > out.txt
 
           # Show the output
-          # cat out.txt
+          cat out.txt
           # Update the PR comment
-          # GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}  gh pr comment ${{ github.event.pull_request.head.ref }} --body-file out.txt
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}  gh pr comment ${{ github.event.pull_request.head.ref }} --body-file out.txt
 
 
 
