@@ -4,3 +4,4 @@ target
 org.eclipse.*
 settings.*
 .factorypath
+.idea
