@@ -21,6 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
+      JF_URL: ${{ secrets.JF_URL }}
+      JF_XRAY_URL: ${{secrets.JF_XRAY_URL}}
+      JF_ARTIFACTORY_URL: ${{secrets.JF_ARTIFACTORY_URL}}
+      JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
       JFROG_BUILD_STATUS: PASS
 
     # Steps represent a sequence of tasks that will be executed as part of the job

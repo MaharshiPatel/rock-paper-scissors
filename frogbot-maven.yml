@@ -24,6 +24,8 @@ jobs:
           # [Mandatory]
           # JFrog platform URL
           JF_URL: ${{ secrets.JF_URL }}
+          JF_XRAY_URL: ${{secrets.JF_XRAY_URL}}
+          JF_ARTIFACTORY_URL: ${{secrets.JF_ARTIFACTORY_URL}}
 
           # [Mandatory if JF_ACCESS_TOKEN is not provided]
           # JFrog username with 'read' permissions for Xray. Must be provided with JF_PASSWORD
