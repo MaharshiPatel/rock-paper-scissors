@@ -10,17 +10,53 @@ on:
   pull_request:
     branches: [ master ]
 
+  pull_request_target:
+    types: [ labeled, opened ]
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+
+  scan-pull-request:
+    runs-on: ubuntu-latest
+    env:
+      JF_ARTIFACTORY_SECRET_SAAS: ${{ secrets.JF_ARTIFACTORY_SECRET_SAAS }}
+      JFROG_BUILD_STATUS: PASS
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      # Install prerequisites
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+          distribution: "temurin"
+
+      - uses: jfrog/frogbot@v1
+        env:
+          # [Mandatory]
+          # JFrog platform URL
+          JF_URL: ${{ secrets.JF_URL }}
+
+          # [Manadatory]
+          # The GitHub token automatically generated for the job
+          JF_GIT_TOKEN: ${{ secrets.JF_GITHUB_TOKEN }}
+
+          # Uncomment the below options if you'd like to use them.
+
+          # [Mandatory if JF_USER and JF_PASSWORD are not provided]
+          # JFrog access token with 'read' permissions on Xray service
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ARTIFACTORY_SECRET_SAAS }}
+
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
-      JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
       JFROG_BUILD_STATUS: PASS
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -28,6 +64,9 @@ jobs:
       # setup JFrog CLI
       - name: Step 1-  Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v1
+
+      - name: Frogbot by JFrog
+        uses: jfrog/frogbot@v1.1.0
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Step 2-  Checkout main branch from Github
@@ -45,12 +84,11 @@ jobs:
           jfrog rt ping
       - name: Step5- Run Maven build
         env:
-          SERVER_ID: swampup113
+          SERVER_ID: swampup201
         run: |
           # Init JFrog CLI Maven config
           MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
           # Replace ‘my_art_server’ with your imported server
-          #jfrog rt mvn-config --server-id-resolve=${{ secrets.JF_ARTIFACTORY_SECRET_1 }}  --repo-resolve-releases=libs-release-remote --repo-resolve-snapshots=libs-snapshot-remote
           jfrog rt mvn-config --server-id-resolve=$SERVER_ID --server-id-deploy=$SERVER_ID --repo-resolve-releases=maven-remote --repo-resolve-snapshots=maven-remote --repo-deploy-releases=backend-libs-release-local --repo-deploy-snapshots=backend-libs-snapshot-local
           # Build the maven project
           #jfrog rt mvn -B package --file pom.xml
