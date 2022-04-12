@@ -72,11 +72,11 @@ jobs:
           #Publish build-info
           jfrog rt bp
           # Scan build with JFrog Xray
-          # jfrog rt bs --fail=false > out.txt
+          jfrog rt bs --fail=false > out.txt
           # Show the output
           # cat out.txt
           # Update the PR comment
-          # GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}  gh pr comment ${{ github.event.pull_request.head.ref }} --body-file out.txt
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}  gh pr comment ${{ github.event.pull_request.head.ref }} --body-file out.txt
       - name: Step5 - list files
         run: ls  -a
 
